@@ -17,6 +17,8 @@ namespace Elemendid_vormis_TARpv23
         System.Windows.Forms.CheckBox chk;
         ColorDialog ColorDialog1 = new ColorDialog();
         Button bt = new Button();
+        bool isCircular = false;
+        Bitmap bmp;
         
 
         public EsimeneVorm(int h,int w)
@@ -52,6 +54,18 @@ namespace Elemendid_vormis_TARpv23
             btnNeljas.Click += Click_ShowPictureButton;
             Controls.Add(btnNeljas);
 
+            x += buttonWidth + buttonSpacing;
+
+            Button btncircular = new Button { Text = "circular", Size = new Size(buttonWidth, 20), Location = new Point(x, y) };
+            btncircular.Click += Click_btncircularButton;
+            Controls.Add(btncircular);
+
+            x += buttonWidth + buttonSpacing;
+
+            Button btnRotate = new Button { Text = "rotate", Size = new Size(buttonWidth, 20), Location = new Point(x, y) };
+            btnRotate.Click += Click_btnRotateButton;
+            Controls.Add(btnRotate);
+
             chk = new System.Windows.Forms.CheckBox();
             chk.Checked = false;
             chk.Text = "Stretch";
@@ -63,16 +77,45 @@ namespace Elemendid_vormis_TARpv23
 
         }
 
+        private void Click_btnRotateButton(object? sender, EventArgs e)
+        {
+            if(bmp != null)
+            {
+                bmp.RotateFlip(RotateFlipType.Rotate90FlipXY);
+                pb1.Image = bmp;
+                pb1.Invalidate();
+            }
+        }
+
+        private void Click_btncircularButton(object? sender, EventArgs e)
+        {
+            if (!isCircular)
+            {
+                System.Drawing.Drawing2D.GraphicsPath obj = new System.Drawing.Drawing2D.GraphicsPath();
+                obj.AddEllipse(0, 0, pb1.Width, pb1.Height);
+                Region rg = new Region(obj);
+                pb1.Region = rg;
+            }
+            else
+            {
+                pb1.Region = null;
+            }
+            isCircular = !isCircular;
+        }
+
         private void Click_ClearPictureButton(object? sender, EventArgs e)
         {
             pb1.Image = null;
+            //Backgound clear
+            this.BackColor= Color.White;
         }
 
         private void Click_ShowPictureButton(object? sender, EventArgs e)
         {
-            pb1.Image = Image.FromFile(@"..\..\..\Picture1.jpg");
-            pb1.Location = new Point(0,0);
-            pb1.Size = new Size(700,700);
+            bmp = new Bitmap(@"..\..\..\Picture1.jpg");
+            pb1.Image = bmp;
+            pb1.Location = new Point(0, 0);
+            pb1.Size = new Size(700, 700);
             this.Controls.Add(pb1);
         }
 
