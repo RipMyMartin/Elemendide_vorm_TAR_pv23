@@ -12,7 +12,7 @@ namespace Elemendid_vormis_TARpv23
 {
     public partial class KolmasVorm : Form
     {
-        List<int> numbers = new List<int> { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6 };
+        List<int> numbers = new List<int> { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8 };
         string firstChoice;
         string secondChoice;
         int tries;
@@ -26,35 +26,37 @@ namespace Elemendid_vormis_TARpv23
         int countDownTime;
         bool gameOver = false;
 
-        public KolmasVorm(int width, int height) // Конструктор с параметрами
+        public KolmasVorm()
         {
-            InitializeComponent(); // Инициализация компонентов
-            this.ClientSize = new Size(width, height); // Устанавливаем размер окна
-            GameTimer = new System.Windows.Forms.Timer(); // Инициализация таймера
-            GameTimer.Interval = 1000; // Установка интервала в 1 секунду
-            GameTimer.Tick += TimerEvent; // Подписка на событие таймера
+            InitializeComponent();
+            this.ClientSize = new Size(480,500);
+            this.BackColor = Color.White;
+            GameTimer = new System.Windows.Forms.Timer();
+            GameTimer.Interval = 1000;
+            GameTimer.Tick += TimerEvent;
 
             lblStatus = new Label
             {
-                Location = new Point(20, 200),
-                Size = new Size(200, 30)
+                Location = new Point(20, 600),
+                Size = new Size(200, 40),
+                ForeColor = Color.White 
             };
             lblTimeLeft = new Label
             {
-                Location = new Point(20, 230),
-                Size = new Size(200, 30)
+                Location = new Point(20, 640),
+                Size = new Size(200, 40),
+                ForeColor = Color.White
             };
             this.Controls.Add(lblStatus);
             this.Controls.Add(lblTimeLeft);
 
-            LoadPictures(); // Загружаем картинки
+            LoadPictures();
         }
 
 
         private void TimerEvent(object sender, EventArgs e)
         {
             countDownTime--;
-            lblTimeLeft.Text = "Time Left: " + countDownTime;
             if (countDownTime < 1)
             {
                 GameOver("Time's Up, You Lose");
@@ -73,13 +75,13 @@ namespace Elemendid_vormis_TARpv23
             int leftPos = 20;
             int topPos = 20;
             int rows = 0;
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < 16; i++)
             {
                 PictureBox newPic = new PictureBox();
-                newPic.Height = 50;
-                newPic.Width = 50;
-                newPic.BackColor = Color.LightGray;
-                newPic.SizeMode = PictureBoxSizeMode.StretchImage;
+                newPic.Height = 100;
+                newPic.Width = 100;
+                newPic.BackColor = Color.Blue;
+                newPic.SizeMode = PictureBoxSizeMode.Zoom;
                 newPic.Click += NewPic_Click;
                 pictures.Add(newPic);
                 if (rows < 4)
@@ -88,23 +90,21 @@ namespace Elemendid_vormis_TARpv23
                     newPic.Left = leftPos;
                     newPic.Top = topPos;
                     this.Controls.Add(newPic);
-                    leftPos += 60;
+                    leftPos += 110;
                 }
                 if (rows == 4)
                 {
                     leftPos = 20;
-                    topPos += 60;
+                    topPos += 110;
                     rows = 0;
                 }
             }
             RestartGame();
         }
-
         private void NewPic_Click(object sender, EventArgs e)
         {
             {
             if (gameOver)
-                // Не регистрировать клик, если игра окончена
                 return;
             }
             if (firstChoice == null)
@@ -133,9 +133,7 @@ namespace Elemendid_vormis_TARpv23
 
         private void RestartGame()
         {
-            // Перемешиваем оригинальный список
             var randomList = numbers.OrderBy(x => Guid.NewGuid()).ToList();
-            // Назначаем перемешанный список оригинальному
             numbers = randomList;
             for (int i = 0; i < pictures.Count; i++)
             {
@@ -143,11 +141,9 @@ namespace Elemendid_vormis_TARpv23
                 pictures[i].Tag = numbers[i].ToString();
             }
             tries = 0;
-            lblStatus.Text = "Mismatched: " + tries + " times.";
-            lblTimeLeft.Text = "Time Left: " + totalTime;
             gameOver = false;
             countDownTime = totalTime;
-            GameTimer.Start(); // Запуск таймера
+            GameTimer.Start();
         }
 
         private void CheckPictures(PictureBox A, PictureBox B)
@@ -160,7 +156,6 @@ namespace Elemendid_vormis_TARpv23
             else
             {
                 tries++;
-                lblStatus.Text = "Mismatched " + tries + " times.";
             }
             firstChoice = null;
             secondChoice = null;
@@ -171,7 +166,6 @@ namespace Elemendid_vormis_TARpv23
                     pics.Image = null;
                 }
             }
-            // Проверяем, решены ли все элементы
             if (pictures.All(o => o.Tag == null))
             {
                 GameOver("Great Work, You Win!!!!");
@@ -180,9 +174,9 @@ namespace Elemendid_vormis_TARpv23
 
         private void GameOver(string msg)
         {
-            GameTimer.Stop(); // Остановка таймера
-            gameOver = true; // Игра окончена
-            MessageBox.Show(msg + " Click Restart to Play Again.", "Gleb Says: ");
+            GameTimer.Stop();
+            gameOver = true;
+            MessageBox.Show(msg + " Click Restart to Play Again.");
         }
     }
 }
