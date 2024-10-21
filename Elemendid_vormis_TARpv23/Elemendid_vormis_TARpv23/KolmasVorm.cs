@@ -26,6 +26,9 @@ namespace Elemendid_vormis_TARpv23
         int countDownTime;
         bool gameOver = false;
 
+        Button btnRestart;
+        Button btnCheckAnswers;
+
         public KolmasVorm(int h,int w)
         {
             InitializeComponent();
@@ -37,18 +40,21 @@ namespace Elemendid_vormis_TARpv23
 
             lblStatus = new Label
             {
-                Location = new Point(20, 600),
+                Location = new Point(20, 520),
                 Size = new Size(200, 40),
-                ForeColor = Color.White 
+                ForeColor = Color.Black
             };
             lblTimeLeft = new Label
             {
-                Location = new Point(20, 640),
+                Location = new Point(20, 560),
                 Size = new Size(200, 40),
-                ForeColor = Color.White
+                ForeColor = Color.Black,
             };
             this.Controls.Add(lblStatus);
             this.Controls.Add(lblTimeLeft);
+
+            AddRestartButton();
+            AddCheckAnswersButton();
 
             LoadPictures();
         }
@@ -57,6 +63,7 @@ namespace Elemendid_vormis_TARpv23
         private void TimerEvent(object sender, EventArgs e)
         {
             countDownTime--;
+            lblTimeLeft.Text = "Time Left: " + countDownTime;
             if (countDownTime < 1)
             {
                 GameOver("Time's Up, You Lose");
@@ -178,5 +185,46 @@ namespace Elemendid_vormis_TARpv23
             gameOver = true;
             MessageBox.Show(msg + " Click Restart to Play Again.");
         }
+
+        private void AddCheckAnswersButton()
+        {
+            btnCheckAnswers = new Button
+            {
+                Text = "Check result",
+                Size = new Size(120, 30),
+                Location = new Point(50, 480)
+            };
+            btnCheckAnswers.Click += CheckAnswersButton_Click;
+            this.Controls.Add(btnCheckAnswers);
+        }
+        private void AddRestartButton()
+        {
+            btnRestart = new Button();
+            btnRestart.Text = "Restart";
+            btnRestart.Size = new Size(100, 30);
+            btnRestart.Location = new Point(180, 480);
+            btnRestart.Click += btnRestart_Click;
+            this.Controls.Add(btnRestart);
+        }
+
+        private void CheckAnswersButton_Click(object sender, EventArgs e)
+        {
+            if (pictures.All(o => o.Tag == null))
+            {
+                GameOver("Great Work, You Win!!!!");
+            }
+            else
+            {
+                MessageBox.Show("There are still unmatched pairs!", "Check result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void btnRestart_Click(object sender, EventArgs e)
+        {
+            RestartGame();
+        }
+
+
+
     }
 }
