@@ -26,10 +26,10 @@ namespace Elemendid_vormis_TARpv23
         int countDownTime;
         bool gameOver = false;
 
-        public KolmasVorm()
+        public KolmasVorm(int h,int w)
         {
             InitializeComponent();
-            this.ClientSize = new Size(480,500);
+            this.ClientSize = new Size(480,650);
             this.BackColor = Color.White;
             GameTimer = new System.Windows.Forms.Timer();
             GameTimer.Interval = 1000;
