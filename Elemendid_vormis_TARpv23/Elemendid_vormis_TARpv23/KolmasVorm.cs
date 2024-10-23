@@ -73,7 +73,6 @@ namespace Elemendid_vormis_TARpv23
             if (countDownTime < 1)
             {
                 GameOver("Time's Up, You Lose");
-                // Show all images if time's up
                 foreach (PictureBox x in pictures)
                 {
                     if (x.Tag != null)
@@ -97,13 +96,12 @@ namespace Elemendid_vormis_TARpv23
                 {
                     Height = 100,
                     Width = 100,
-                    BackColor = Color.LightSkyBlue, // Light background for PictureBoxes
+                    BackColor = Color.LightSkyBlue,
                     SizeMode = PictureBoxSizeMode.Zoom
                 };
                 newPic.Click += NewPic_Click;
                 pictures.Add(newPic);
                 
-                // Positioning the PictureBox
                 if (rows < 4)
                 {
                     newPic.Left = leftPos;
@@ -121,8 +119,6 @@ namespace Elemendid_vormis_TARpv23
             }
             RestartGame();
         }
-
-        // Picture click event handler
         private void NewPic_Click(object sender, EventArgs e)
         {
             if (gameOver) return;
@@ -151,10 +147,8 @@ namespace Elemendid_vormis_TARpv23
             }
         }
 
-        // Restart the game
         private void RestartGame()
         {
-            // Shuffle the numbers
             var randomList = numbers.OrderBy(x => Guid.NewGuid()).ToList();
             numbers = randomList;
             for (int i = 0; i < pictures.Count; i++)
@@ -167,14 +161,12 @@ namespace Elemendid_vormis_TARpv23
             countDownTime = totalTime;
             gameTimer.Start();
         }
-
-        // Check if the selected pictures match
         private void CheckPictures(PictureBox A, PictureBox B)
         {
             if (firstChoice == secondChoice)
             {
                 A.Tag = null;
-                B.Tag = null; // Remove tags for matched pairs
+                B.Tag = null;
             }
             else
             {
@@ -192,7 +184,6 @@ namespace Elemendid_vormis_TARpv23
                 }
             }
 
-            // Check if all pairs are matched
             if (pictures.All(o => o.Tag == null))
             {
                 GameOver("Great Work, You Win!!!!");
@@ -206,8 +197,6 @@ namespace Elemendid_vormis_TARpv23
             gameOver = true;
             MessageBox.Show(msg + " Click Restart to Play Again.", "Game Over", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
-        // Add Check Answers button
         private void AddCheckAnswersButton()
         {
             btnCheckAnswers = new Button
@@ -215,8 +204,8 @@ namespace Elemendid_vormis_TARpv23
                 Text = "Check Result",
                 Size = new Size(120, 30),
                 Location = new Point(50, 480),
-                BackColor = Color.LightGreen, // Button background color
-                ForeColor = Color.DarkGreen, // Button text color
+                BackColor = Color.LightGreen,
+                ForeColor = Color.DarkGreen,
                 Font = new Font("Arial", 10, FontStyle.Bold)
             };
             btnCheckAnswers.Click += CheckAnswersButton_Click;
@@ -231,15 +220,14 @@ namespace Elemendid_vormis_TARpv23
                 Text = "Restart",
                 Size = new Size(100, 30),
                 Location = new Point(180, 480),
-                BackColor = Color.Orange, // Button background color
-                ForeColor = Color.White, // Button text color
+                BackColor = Color.Orange,
+                ForeColor = Color.White,
                 Font = new Font("Arial", 10, FontStyle.Bold)
             };
             btnRestart.Click += btnRestart_Click;
             this.Controls.Add(btnRestart);
         }
 
-        // Check answers button click event
         private void CheckAnswersButton_Click(object sender, EventArgs e)
         {
             if (pictures.All(o => o.Tag == null))
@@ -251,8 +239,6 @@ namespace Elemendid_vormis_TARpv23
                 MessageBox.Show("There are still unmatched pairs!", "Check Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-
-        // Restart button click event
         private void btnRestart_Click(object sender, EventArgs e)
         {
             RestartGame();
