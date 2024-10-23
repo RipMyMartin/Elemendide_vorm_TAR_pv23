@@ -75,7 +75,6 @@ namespace Elemendid_vormis_TARpv23
                 }
             }
         }
-
         private void LoadPictures()
         {
             int leftPos = 20;
@@ -181,7 +180,6 @@ namespace Elemendid_vormis_TARpv23
             }
         }
 
-        // Handle game over scenario
         private void GameOver(string msg)
         {
             gameTimer.Stop();
@@ -203,7 +201,6 @@ namespace Elemendid_vormis_TARpv23
             this.Controls.Add(btnCheckAnswers);
         }
 
-        // Add Restart button
         private void AddRestartButton()
         {
             btnRestart = new Button
