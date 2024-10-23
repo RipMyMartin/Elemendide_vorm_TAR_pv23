@@ -8,10 +8,7 @@ namespace Elemendid_vormis_TARpv23
 {
     public partial class KolmasVorm : Form
     {
-        // List of numbers representing pairs
         private List<int> numbers = new List<int> { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8 };
-
-        // Game variables
         private string firstChoice;
         private string secondChoice;
         private int tries;
@@ -32,21 +29,19 @@ namespace Elemendid_vormis_TARpv23
         {
             InitializeComponent();
             this.ClientSize = new Size(480, 650);
-            this.BackColor = Color.LightCyan; // Softer background color
+            this.BackColor = Color.LightCyan;
 
-            // Initialize Timer
             gameTimer = new System.Windows.Forms.Timer
             {
-                Interval = 1000 // 1 second
+                Interval = 1000
             };
             gameTimer.Tick += TimerEvent;
 
-            // Initialize Labels
             lblStatus = new Label
             {
                 Location = new Point(20, 520),
                 Size = new Size(200, 40),
-                ForeColor = Color.DarkBlue, // Dark text color for better contrast
+                ForeColor = Color.DarkBlue,
                 Font = new Font("Arial", 12, FontStyle.Bold)
             };
             lblTimeLeft = new Label
@@ -59,13 +54,11 @@ namespace Elemendid_vormis_TARpv23
             this.Controls.Add(lblStatus);
             this.Controls.Add(lblTimeLeft);
 
-            // Add buttons and load pictures
             AddRestartButton();
             AddCheckAnswersButton();
             LoadPictures();
         }
 
-        // Timer event to manage countdown
         private void TimerEvent(object sender, EventArgs e)
         {
             countDownTime--;
@@ -83,7 +76,6 @@ namespace Elemendid_vormis_TARpv23
             }
         }
 
-        // Load PictureBoxes for the game
         private void LoadPictures()
         {
             int leftPos = 20;
@@ -175,7 +167,6 @@ namespace Elemendid_vormis_TARpv23
             firstChoice = null;
             secondChoice = null;
 
-            // Hide unmatched pictures
             foreach (PictureBox pics in pictures.ToList())
             {
                 if (pics.Tag != null)
