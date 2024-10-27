@@ -1,5 +1,5 @@
-Math Quiz Answers:
-Sum: 9 (Correct: 9)
-Difference: 0 (Correct: 0)
-Product: 0 (Correct: 49)
-Quotient: 0 (Correct: 0)
+Answers to the math test:
+Sum: 0: Correct answer: 9
+Difference: 0: Correct answer: -2
+Product: 0: Correct answer: 28
+Quotient: 0: Correct answer: 1

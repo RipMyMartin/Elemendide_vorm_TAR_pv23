@@ -6,16 +6,16 @@ namespace Elemendid_vormis_TARpv23
 {
     public partial class TeineVorm : Form
     {
-        Label timeLabel;
-        Label plusLeftLabel, plusRightLabel;
-        Label minusLeftLabel, minusRightLabel;
-        Label timesLeftLabel, timesRightLabel;
+        private Label timeLabel;
+        private Label plusLeftLabel, plusRightLabel;
+        private Label minusLeftLabel, minusRightLabel;
+        private Label timesLeftLabel, timesRightLabel;
         Label dividedLeftLabel, dividedRightLabel;
-        NumericUpDown sum, difference, product, quotient;
-        Button startButton, checkButton, saveButton, stopButton;
-        System.Windows.Forms.Timer quizTime;
-        int timeLeft;
-        bool isQuizRunning = false;
+        private NumericUpDown sum, difference, product, quotient;
+        private Button startButton, checkButton, saveButton, stopButton, randomQuestionButton;
+        private System.Windows.Forms.Timer quizTime;
+        private int timeLeft;
+        private bool isQuizRunning = false;
 
         public TeineVorm(int h, int w)
         {
@@ -24,12 +24,14 @@ namespace Elemendid_vormis_TARpv23
             this.Text = "Math Quiz";
             this.BackColor = Color.LightSkyBlue;
 
-            timeLabel = new Label();
-            timeLabel.Text = "Time Left";
-            timeLabel.Font = new Font("Arial", 20, FontStyle.Bold);
-            timeLabel.ForeColor = Color.White;
-            timeLabel.Size = new Size(200, 50);
-            timeLabel.Location = new Point(50, 20);
+            timeLabel = new Label
+            {
+                Text = "Time Left",
+                Font = new Font("Arial", 20, FontStyle.Bold),
+                ForeColor = Color.White,
+                Size = new Size(200, 50),
+                Location = new Point(50, 20)
+            };
             Controls.Add(timeLabel);
 
             CreateMathQuestion(out plusLeftLabel, out plusRightLabel, out sum, "+", 50, 100);
@@ -37,16 +39,18 @@ namespace Elemendid_vormis_TARpv23
             CreateMathQuestion(out timesLeftLabel, out timesRightLabel, out product, "×", 50, 200);
             CreateMathQuestion(out dividedLeftLabel, out dividedRightLabel, out quotient, "÷", 50, 250);
 
-            startButton = CreateButton("Start Quiz", 180, 400, StartButton_Click);
-            checkButton = CreateButton("Check Results", 290, 400, CheckButton_Click);
-            saveButton = CreateButton("Save Answers", 400, 400, SaveButton_Click);
-            stopButton = CreateButton("Stop", 510, 400, StopButton_Click);
+            startButton = CreateButton("Start Quiz", 60, 400, StartButton_Click);
+            checkButton = CreateButton("Check Results", 170, 400, CheckButton_Click);
+            saveButton = CreateButton("Save Answers", 280, 400, SaveButton_Click);
+            stopButton = CreateButton("Stop", 390, 400, StopButton_Click);
+            randomQuestionButton = CreateButton("Show Random Question", 500, 400, ShowRandomQuestion_Click);
 
-            quizTime = new System.Windows.Forms.Timer();
-            quizTime.Interval = 1000;
+            quizTime = new System.Windows.Forms.Timer
+            {
+                Interval = 1000
+            };
             quizTime.Tick += new EventHandler(Timer_Tick);
         }
-
         private void StopButton_Click(object? sender, EventArgs e)
         {
             if (isQuizRunning)
@@ -63,16 +67,45 @@ namespace Elemendid_vormis_TARpv23
             }
         }
 
+        private void ShowRandomQuestion_Click(object sender, EventArgs e)
+        {
+            Random random = new ();
+            int randomAnswer = random.Next(1, 5);
+
+            int answer = 0;
+
+            switch (randomAnswer)
+            {
+                case 1:
+                    answer = int.Parse(plusLeftLabel.Text) + int.Parse(plusRightLabel.Text);
+                    break;
+                case 2:
+                    answer = int.Parse(minusLeftLabel.Text) - int.Parse(minusRightLabel.Text);
+                    break;
+                case 3:
+                    answer = int.Parse(timesLeftLabel.Text) * int.Parse(timesRightLabel.Text);
+                    break;
+                case 4:
+                    answer = int.Parse(dividedLeftLabel.Text) / int.Parse(dividedRightLabel.Text);
+                    break;
+                default:
+                    answer = 0;
+                    break;
+            }
+            MessageBox.Show($"Random Answer: {answer}", "Random Answer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
         private Button CreateButton(string text, int x, int y, EventHandler clickEvent)
         {
-            Button button = new Button();
-            button.Text = text;
-            button.Size = new Size(100, 50);
-            button.Location = new Point(x, y);
-            button.BackColor = Color.LightCoral;
-            button.ForeColor = Color.White;
-            button.Font = new Font("Arial", 10, FontStyle.Bold);
+            Button button = new()
+            {
+                Text = text,
+                Size = new Size(100, 50),
+                Location = new Point(x, y),
+                BackColor = Color.LightCoral,
+                ForeColor = Color.White,
+                Font = new Font("Arial", 10, FontStyle.Bold)
+            };
             button.Click += clickEvent;
             Controls.Add(button);
             return button;
@@ -84,21 +117,25 @@ namespace Elemendid_vormis_TARpv23
             rightLabel = CreateLabel("?", x + 100, y);
             Label operatorLabel = CreateLabel(operation, x + 60, y);
 
-            answerBox = new NumericUpDown();
-            answerBox.Size = new Size(100, 50);
-            answerBox.Location = new Point(x + 200, y);
-            answerBox.BackColor = Color.LightYellow;
+            answerBox = new NumericUpDown
+            {
+                Size = new Size(100, 50),
+                Location = new Point(x + 200, y),
+                BackColor = Color.LightYellow
+            };
             Controls.Add(answerBox);
         }
-
+        
         private Label CreateLabel(string text, int x, int y)
         {
-            Label label = new Label();
-            label.Text = text;
-            label.Font = new Font("Arial", 18);
-            label.Location = new Point(x, y);
-            label.Size = new Size(60, 50);
-            label.ForeColor = Color.DarkSlateGray;
+            Label label = new()
+            {
+                Text = text,
+                Font = new Font("Arial", 18),
+                Location = new Point(x, y),
+                Size = new Size(60, 50),
+                ForeColor = Color.DarkSlateGray
+            };
             Controls.Add(label);
             return label;
         }
@@ -146,20 +183,26 @@ namespace Elemendid_vormis_TARpv23
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Math Quiz Answers:");
-            sb.AppendLine($"Sum: {sum.Value} (Correct: {int.Parse(plusLeftLabel.Text) + int.Parse(plusRightLabel.Text)})");
-            sb.AppendLine($"Difference: {difference.Value} (Correct: {int.Parse(minusLeftLabel.Text) - int.Parse(minusRightLabel.Text)})");
-            sb.AppendLine($"Product: {product.Value} (Correct: {int.Parse(timesLeftLabel.Text) * int.Parse(timesRightLabel.Text)})");
+            StringBuilder answers = new();
+            answers.AppendLine("Answers to the math test:");
 
-            int rightOperand = int.Parse(dividedRightLabel.Text);
-            sb.AppendLine($"Quotient: {quotient.Value} (Correct: {(rightOperand != 0 ? int.Parse(dividedLeftLabel.Text) / rightOperand : "N/A")})");
+            int correctSum = int.Parse(plusLeftLabel.Text) + int.Parse(plusRightLabel.Text);
+            answers.AppendLine("Sum: " + sum.Value + ": Correct answer: " + correctSum + "");
 
-            string filePath = @"..\..\..\QuizAnswers.txt";
-            File.WriteAllText(filePath, sb.ToString());
+            int correctDifference = int.Parse(minusLeftLabel.Text) - int.Parse(minusRightLabel.Text);
+            answers.AppendLine("Difference: " + difference.Value + ": Correct answer: " + correctDifference + "");
 
-            MessageBox.Show("Answers saved", "Save Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            int correctProduct = int.Parse(timesLeftLabel.Text) * int.Parse(timesRightLabel.Text);
+            answers.AppendLine("Product: " + product.Value + ": Correct answer: " + correctProduct + "");
+
+            int correctQuotient = int.Parse(dividedRightLabel.Text) != 0 ? int.Parse(dividedLeftLabel.Text) / int.Parse(dividedRightLabel.Text) : 0;
+            answers.AppendLine("Quotient: " + quotient.Value + ": Correct answer: " + (int.Parse(dividedRightLabel.Text) != 0 ? correctQuotient.ToString() : "N/A") + "");
+
+            File.WriteAllText(@"..\..\..\QuizAnswers.txt", answers.ToString());
+
+            MessageBox.Show("Answers saved", "Confirmation", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
 
         private void Timer_Tick(object sender, EventArgs e)
         {

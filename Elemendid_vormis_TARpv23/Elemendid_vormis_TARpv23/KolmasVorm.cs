@@ -8,24 +8,24 @@ namespace Elemendid_vormis_TARpv23
 {
     public partial class KolmasVorm : Form
     {
-        private List<int> numbers = new List<int> { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8 };
-        private string firstChoice;
-        private string secondChoice;
+        private List<int> numbers = new () { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8 };
+        private string? firstChoice;
+        private string? secondChoice;
         private int tries;
-        private List<PictureBox> pictures = new List<PictureBox>();
+        private List<PictureBox> pictures = new();
         private PictureBox picA;
         private PictureBox picB;
-        private Label lblStatus;
         private Label lblTimeLeft;
-        System.Windows.Forms.Timer gameTimer;
+        private System.Windows.Forms.Timer gameTimer;
         private int totalTime = 60;
         private int countDownTime;
         private bool gameOver = false;
-
         private Button btnRestart;
         private Button btnCheckAnswers;
+        private Button btnPause;
+        private bool isPaused = false;
 
-        public KolmasVorm(int h, int w)
+        public KolmasVorm()
         {
             InitializeComponent();
             this.ClientSize = new Size(480, 650);
@@ -37,26 +37,48 @@ namespace Elemendid_vormis_TARpv23
             };
             gameTimer.Tick += TimerEvent;
 
-            lblStatus = new Label
-            {
-                Location = new Point(20, 520),
-                Size = new Size(200, 40),
-                ForeColor = Color.DarkBlue,
-                Font = new Font("Arial", 12, FontStyle.Bold)
-            };
             lblTimeLeft = new Label
             {
-                Location = new Point(20, 560),
+                Location = new Point(185, 50),
                 Size = new Size(200, 40),
                 ForeColor = Color.DarkBlue,
                 Font = new Font("Arial", 12, FontStyle.Bold),
             };
-            this.Controls.Add(lblStatus);
-            this.Controls.Add(lblTimeLeft);
+            Controls.Add(lblTimeLeft);
 
             AddRestartButton();
             AddCheckAnswersButton();
             LoadPictures();
+            AddPauseButton();
+        }
+        private void AddPauseButton()
+        {
+            btnPause = new Button
+            {
+                Text = "Pause",
+                Size = new Size(100, 30),
+                Location = new Point(260, 550),
+                BackColor = Color.LightGray,
+                ForeColor = Color.DarkSlateGray,
+                Font = new Font("Arial", 10, FontStyle.Bold)
+            };
+            btnPause.Click += BtnPause_Click;
+            this.Controls.Add(btnPause);
+        }
+
+        private void BtnPause_Click(object sender, EventArgs e)
+        {
+            if (isPaused)
+            {
+                gameTimer.Start();
+                btnPause.Text = "Pause";
+            }
+            else
+            {
+                gameTimer.Stop();
+                btnPause.Text = "Resume";
+            }
+            isPaused = !isPaused;
         }
 
         private void TimerEvent(object sender, EventArgs e)
@@ -75,15 +97,18 @@ namespace Elemendid_vormis_TARpv23
                 }
             }
         }
+
         private void LoadPictures()
         {
             int leftPos = 20;
             int topPos = 20;
             int rows = 0;
 
+            topPos += 70;
+
             for (int i = 0; i < 16; i++)
             {
-                PictureBox newPic = new PictureBox
+                PictureBox newPic = new()
                 {
                     Height = 100,
                     Width = 100,
@@ -92,7 +117,7 @@ namespace Elemendid_vormis_TARpv23
                 };
                 newPic.Click += NewPic_Click;
                 pictures.Add(newPic);
-                
+
                 if (rows < 4)
                 {
                     newPic.Left = leftPos;
@@ -110,13 +135,14 @@ namespace Elemendid_vormis_TARpv23
             }
             RestartGame();
         }
+
         private void NewPic_Click(object sender, EventArgs e)
         {
             if (gameOver) return;
 
             if (firstChoice == null)
             {
-                picA = sender as PictureBox;
+                picA = (PictureBox)sender;
                 if (picA.Tag != null && picA.Image == null)
                 {
                     picA.Image = Image.FromFile(@"..\..\..\" + (string)picA.Tag + ".png");
@@ -125,7 +151,7 @@ namespace Elemendid_vormis_TARpv23
             }
             else if (secondChoice == null)
             {
-                picB = sender as PictureBox;
+                picB = (PictureBox)sender;
                 if (picB.Tag != null && picB.Image == null)
                 {
                     picB.Image = Image.FromFile(@"..\..\..\" + (string)picB.Tag + ".png");
@@ -152,6 +178,7 @@ namespace Elemendid_vormis_TARpv23
             countDownTime = totalTime;
             gameTimer.Start();
         }
+
         private void CheckPictures(PictureBox A, PictureBox B)
         {
             if (firstChoice == secondChoice)
@@ -163,6 +190,7 @@ namespace Elemendid_vormis_TARpv23
             {
                 tries++;
             }
+
             firstChoice = null;
             secondChoice = null;
 
@@ -174,7 +202,17 @@ namespace Elemendid_vormis_TARpv23
                 }
             }
 
-            if (pictures.All(o => o.Tag == null))
+            bool allCollected = true;
+            foreach (var pic in pictures)
+            {
+                if (pic.Tag != null)
+                {
+                    allCollected = false;
+                    break;
+                }
+            }
+
+            if (allCollected)
             {
                 GameOver("Great Work, You Win!!!!");
             }
@@ -186,18 +224,19 @@ namespace Elemendid_vormis_TARpv23
             gameOver = true;
             MessageBox.Show(msg + " Click Restart to Play Again.", "Game Over", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
         private void AddCheckAnswersButton()
         {
             btnCheckAnswers = new Button
             {
-                Text = "Check Result",
+                Text = "Check Answer",
                 Size = new Size(120, 30),
-                Location = new Point(50, 480),
+                Location = new Point(20, 550),
                 BackColor = Color.LightGreen,
                 ForeColor = Color.DarkGreen,
                 Font = new Font("Arial", 10, FontStyle.Bold)
             };
-            btnCheckAnswers.Click += CheckAnswersButton_Click;
+            btnCheckAnswers.Click += BtnCheckAnswers_Click;
             this.Controls.Add(btnCheckAnswers);
         }
 
@@ -207,29 +246,39 @@ namespace Elemendid_vormis_TARpv23
             {
                 Text = "Restart",
                 Size = new Size(100, 30),
-                Location = new Point(180, 480),
+                Location = new Point(150, 550),
                 BackColor = Color.Orange,
                 ForeColor = Color.White,
                 Font = new Font("Arial", 10, FontStyle.Bold)
             };
-            btnRestart.Click += btnRestart_Click;
+            btnRestart.Click += BtnRestart_Click;
             this.Controls.Add(btnRestart);
         }
 
-        private void CheckAnswersButton_Click(object sender, EventArgs e)
-        {
-            if (pictures.All(o => o.Tag == null))
-            {
-                GameOver("Great Work, You Win!!!!");
-            }
-            else
-            {
-                MessageBox.Show("There are still unmatched pairs!", "Check Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-        private void btnRestart_Click(object sender, EventArgs e)
+
+        private void BtnRestart_Click(object sender, EventArgs e)
         {
             RestartGame();
+        }
+
+        private void RevealAllCards()
+        {
+            foreach (PictureBox pic in pictures)
+            {
+                if (pic.Tag != null)
+                {
+                    pic.Image = Image.FromFile(@"..\..\..\" + (string)pic.Tag + ".png");
+                }
+            }
+        }
+
+        private void BtnCheckAnswers_Click(object sender, EventArgs e)
+        {
+            RevealAllCards();
+
+            gameTimer.Stop();
+            gameOver = true;
+            MessageBox.Show("Great Work, You Win!!!!" + " Click Restart to Play Again.", "Game Over", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

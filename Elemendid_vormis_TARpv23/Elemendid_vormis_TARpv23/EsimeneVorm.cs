@@ -10,9 +10,8 @@ namespace Elemendid_vormis_TARpv23
         PictureBox pb1 = new PictureBox();
         CheckBox chk;
         ColorDialog ColorDialog1 = new ColorDialog();
-        Button bt = new Button();
         bool isCircular = false;
-        Bitmap bmp;
+        Bitmap? bmp;
         OpenFileDialog openFileDialog1 = new OpenFileDialog();
 
         public EsimeneVorm(int h, int w)
@@ -22,7 +21,6 @@ namespace Elemendid_vormis_TARpv23
             this.Text = "Esimene Vorm";
             this.BackColor = Color.LightBlue;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
 
             InitializeButtons();
             InitializePictureBox();
@@ -32,37 +30,49 @@ namespace Elemendid_vormis_TARpv23
         private void InitializeButtons()
         {
             int x = 20;
-            int y = 480;
+            int y = 520;
             int buttonWidth = 150;
-            int buttonHeight = 40;
             int buttonSpacing = 10;
 
-            // Button for closing the form
+            Button btnYourFile = CreateButton("Your File", x, y, Click_btnYouFile);
+
+            x += buttonWidth + buttonSpacing;
+
+            Button btnNewButton = CreateButton("Blurring", x, y, Click_blurring);
+
+            x = 20;
+            y = 480;
+
             Button btnClose = CreateButton("Close", x, y, Click_CloseButton);
             x += buttonWidth + buttonSpacing;
 
-            // Button for setting a background picture
             Button btnBackground = CreateButton("Set Background Picture", x, y, backgroundButton_Click);
             x += buttonWidth + buttonSpacing;
 
-            // Button for clearing the picture
             Button btnClear = CreateButton("Clear Picture", x, y, Click_ClearPictureButton);
             x += buttonWidth + buttonSpacing;
 
-            // Button for showing a picture
             Button btnShow = CreateButton("Show Picture", x, y, Click_ShowPictureButton);
             x += buttonWidth + buttonSpacing;
 
-            // Button for circular shape
             Button btnCircular = CreateButton("Toggle Circular", x, y, Click_btncircularButton);
             x += buttonWidth + buttonSpacing;
 
-            // Button for rotating the picture
-            Button btnRotate = CreateButton("Rotate", x, y, Click_btnRotateButton);
+            Button btnRotate90 = CreateButton("Rotate 90°", x, y, Click_btnRotateButton90);
             x += buttonWidth + buttonSpacing;
 
-            // Button for uploading a file
-            Button btnYourFile = CreateButton("Your File", x, y, Click_btnYouFile);
+            Button btnRotateM90 = CreateButton("Rotate -90°", x, y, Click_btnRotateButtonM90);
+        }
+
+        private void Click_blurring(object? sender, EventArgs e)
+        {
+            if (pb1.Image != null)
+            {
+                int newWidth = (int)(pb1.Image.Width * 0.8);
+                int newHeight = (int)(pb1.Image.Height * 0.8);
+                Bitmap newImage = new (pb1.Image, new Size(newWidth, newHeight));
+                pb1.Image = newImage;
+            }
         }
 
         private Button CreateButton(string text, int x, int y, EventHandler clickEvent)
@@ -84,7 +94,7 @@ namespace Elemendid_vormis_TARpv23
         private void InitializePictureBox()
         {
             pb1.Location = new Point(10, 10);
-            pb1.Size = new Size(960, 400);
+            pb1.Size = new Size(1100, 400);
             pb1.BorderStyle = BorderStyle.FixedSingle;
             Controls.Add(pb1);
         }
@@ -99,7 +109,7 @@ namespace Elemendid_vormis_TARpv23
                 BackColor = Color.LightBlue,
                 ForeColor = Color.Black
             };
-            chk.CheckedChanged += checkBox1_CheckedChanged;
+            chk.CheckedChanged += CheckBox1_CheckedChanged;
             Controls.Add(chk);
         }
 
@@ -125,16 +135,9 @@ namespace Elemendid_vormis_TARpv23
 
         private void Click_ShowPictureButton(object? sender, EventArgs e)
         {
-            try
-            {
                 bmp = new Bitmap(@"..\..\..\Picture1.jpg");
                 pb1.Image = bmp;
                 pb1.SizeMode = PictureBoxSizeMode.Normal;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error loading picture: " + ex.Message);
-            }
         }
 
         private void Click_btnYouFile(object? sender, EventArgs e)
@@ -148,11 +151,21 @@ namespace Elemendid_vormis_TARpv23
             }
         }
 
-        private void Click_btnRotateButton(object? sender, EventArgs e)
+        private void Click_btnRotateButton90(object? sender, EventArgs e)
         {
             if (bmp != null)
             {
                 bmp.RotateFlip(RotateFlipType.Rotate90FlipXY);
+                pb1.Image = bmp;
+                pb1.Invalidate();
+            }
+        }
+
+        private void Click_btnRotateButtonM90(object? sender, EventArgs e)
+        {
+            if (bmp != null)
+            {
+                bmp.RotateFlip(RotateFlipType.Rotate270FlipXY);
                 pb1.Image = bmp;
                 pb1.Invalidate();
             }
@@ -174,7 +187,7 @@ namespace Elemendid_vormis_TARpv23
             isCircular = !isCircular;
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (chk.Checked)
                 pb1.SizeMode = PictureBoxSizeMode.StretchImage;

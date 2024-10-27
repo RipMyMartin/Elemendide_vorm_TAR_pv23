@@ -248,7 +248,7 @@ namespace Elemendid_vormis_TARpv23
         }
         private void Click_KolmnasVorm(object? sender, EventArgs e)
         {
-            KolmasVorm kolmasVorm = new KolmasVorm(500, 700);
+            KolmasVorm kolmasVorm = new KolmasVorm();
             kolmasVorm.Show();
         }
 
